@@ -1,0 +1,226 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>The Convergence, BiRAGAS</title><style>
+:root{--ink:#070B13;--navy:#111C33;--gold:#C9A96A;--red:#C8102E;--sky:#6E96D6;--teal:#3FA9A6;
+--mist:#A8B8D4;--white:#F2F6FC;--good:#4FC08D}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--ink);color:var(--white);overflow:hidden;
+font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+#stage{position:relative;flex:1;overflow:hidden;
+background:radial-gradient(120% 85% at 50% -10%,#1b2b4d 0%,rgba(0,0,0,0) 62%),
+linear-gradient(170deg,#070B13 0%,#0d1526 55%,#111C33 100%)}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+justify-content:center;padding:5vh 5vw 17vh;opacity:0;pointer-events:none;transition:opacity .55s}
+.scene.on{opacity:1;pointer-events:auto}
+.kick{font-size:11.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);
+font-weight:800;opacity:0;margin-bottom:12px}
+.scene.on .kick{animation:rise .7s .05s forwards}
+h1{font-size:clamp(25px,4.4vw,52px);font-weight:800;letter-spacing:-.6px;margin:0;text-align:center;opacity:0}
+.scene.on h1{animation:rise .8s .2s forwards}
+h1 .dot{color:var(--red)}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.7)}72%{transform:scale(1.07)}100%{opacity:1;transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes snip{0%{transform:translateX(-120px) rotate(-12deg);opacity:0}
+ 25%{opacity:1}55%{transform:translateX(0) rotate(0)}100%{transform:translateX(130px) rotate(10deg);opacity:0}}
+@keyframes fall{to{transform:translateY(60px) rotate(26deg);opacity:0}}
+svg{overflow:visible}
+.mark{height:clamp(30px,4vw,52px);opacity:0}
+.scene.on .mark{animation:pop .9s forwards}
+/* ladder */
+.rungs{display:flex;gap:clamp(12px,3vw,40px);align-items:flex-end;margin-top:34px}
+.rung{width:clamp(140px,19vw,250px);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+border-radius:13px;padding:18px;text-align:center;opacity:0}
+.scene.on .rung{animation:rise .7s forwards}
+.rung b{display:block;font-size:19px;color:var(--white)}
+.rung em{display:block;font-size:12.5px;color:var(--gold);font-style:normal;font-weight:700;
+letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.rung span{font-size:13.5px;color:var(--mist)}
+.rung.hi{border-color:var(--gold);background:rgba(201,169,106,.12)}
+/* three stories */
+.stories{display:flex;gap:clamp(14px,3.4vw,52px);margin-top:30px;flex-wrap:wrap;justify-content:center}
+.st{text-align:center;opacity:0}
+.scene.on .st{animation:pop .7s forwards}
+.st p{margin:10px 0 0;font-size:13.5px;color:var(--mist);max-width:21ch}
+/* streams */
+.lanes{display:flex;flex-direction:column;gap:11px;margin-top:26px;width:min(880px,94vw)}
+.lane{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.045);
+border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--c);border-radius:11px;
+padding:13px 18px;opacity:0}
+.scene.on .lane{animation:rise .6s forwards}
+.lane b{min-width:132px;color:var(--white);font-size:15.5px}
+.lane span{color:var(--mist);font-size:13.5px}
+.lane i{margin-left:auto;font-style:normal;font-size:11px;letter-spacing:.16em;color:var(--c);
+font-weight:800;text-transform:uppercase}
+/* criteria */
+.crit{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px;width:min(780px,94vw)}
+.crit div{background:rgba(255,255,255,.05);border:1px solid rgba(201,169,106,.3);border-radius:10px;
+padding:12px 8px;text-align:center;font-size:13px;color:#EEE4CE;opacity:0;text-transform:capitalize}
+.scene.on .crit div{animation:pop .45s forwards}
+/* console */
+.console{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-top:20px;
+width:min(1020px,95vw);align-items:start}
+.panel{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:14px;
+padding:16px 18px}
+.panel h4{margin:0 0 10px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.toggles{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.tg{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:8px 11px;cursor:pointer;
+font-size:13px;color:var(--mist);text-transform:capitalize;user-select:none}
+.tg.on{background:rgba(79,192,141,.14);border-color:var(--good);color:#DFF6EA}
+.tg .box{width:15px;height:15px;border-radius:4px;border:2px solid currentColor;flex:none;
+display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1}
+.slider{margin-top:12px}
+.slider label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mist)}
+.slider input{width:100%;accent-color:var(--gold);margin-top:6px}
+.gauge{text-align:center}
+.gauge .num{font-size:clamp(44px,7vw,78px);font-weight:800;line-height:1;color:var(--gold)}
+.gauge .den{font-size:13px;color:var(--mist);margin-top:4px}
+.verdict{margin-top:14px;border-radius:12px;padding:14px;border:1px solid}
+.verdict b{display:block;font-size:19px}
+.verdict span{font-size:12.5px;opacity:.85}
+.v1{background:rgba(79,192,141,.13);border-color:var(--good);color:#CFF3E3}
+.v2{background:rgba(110,150,214,.13);border-color:var(--sky);color:#D6E3F8}
+.v3{background:rgba(201,169,106,.13);border-color:var(--gold);color:#F0E6D2}
+.v0{background:rgba(200,16,46,.14);border-color:var(--red);color:#FBD9DF}
+.bars{margin-top:12px}
+.bars div{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--mist);margin:5px 0}
+.bars i{flex:1;height:7px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;font-style:normal}
+.bars i u{display:block;height:100%;background:var(--gold);text-decoration:none}
+.hintline{margin-top:12px;font-size:12.5px;color:var(--mist);font-style:italic;text-align:center}
+/* refuse */
+.beat{display:flex;gap:7px;margin-top:26px;flex-wrap:wrap;justify-content:center}
+.beat span{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;
+justify-content:center;font-size:17px;font-weight:800;opacity:0}
+.scene.on .beat span{animation:pop .45s forwards}
+.beat .hit{background:rgba(79,192,141,.16);border:1px solid var(--good);color:#CFF3E3}
+.beat .ab{background:rgba(201,169,106,.12);border:1px dashed var(--gold);color:var(--gold)}
+.big{margin-top:24px;font-size:clamp(15px,2vw,22px);color:#F0E6D2;text-align:center;
+max-width:60ch;opacity:0}
+.scene.on .big{animation:rise .8s 1.2s forwards}
+/* chrome */
+#cap{position:absolute;left:0;right:0;bottom:96px;text-align:center;padding:0 7vw;
+font-size:clamp(13.5px,1.6vw,19px);line-height:1.5;text-shadow:0 2px 16px rgba(0,0,0,.9)}
+#cap.off{display:none}
+#bar{position:relative;height:78px;background:rgba(5,8,14,.9);border-top:1px solid rgba(255,255,255,.1);
+display:flex;align-items:center;gap:13px;padding:0 18px}
+#prog{position:absolute;top:0;left:0;height:3px;background:var(--gold);width:0;transition:width .2s linear}
+button.cb{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;
+width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;
+align-items:center;justify-content:center}
+button.cb:hover{background:rgba(201,169,106,.25);border-color:var(--gold)}
+button.cb.big2{width:50px;height:50px;background:var(--gold);color:#17233c;border-color:var(--gold);font-size:18px}
+#dots{display:flex;gap:7px;flex:1;justify-content:center}
+#dots b{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer}
+#dots b.on{background:var(--gold);transform:scale(1.35)}
+#meta{font-size:12.5px;color:var(--mist);min-width:118px;text-align:right}
+#gate0{position:absolute;inset:0;z-index:40;cursor:pointer;display:flex;flex-direction:column;
+align-items:center;justify-content:center;
+background:radial-gradient(120% 80% at 50% 26%,#1b2b4d 0%,#070B13 72%)}
+#gate0 img{height:46px;margin-bottom:22px}
+#gate0 .pl{width:80px;height:80px;border-radius:50%;background:var(--gold);color:#17233c;
+display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px}
+#gate0 h2{margin:0 0 6px;font-size:clamp(21px,3vw,33px);text-align:center}
+#gate0 p{color:var(--mist);font-size:14px;margin:0;text-align:center}
+@media (max-width:820px){.console{grid-template-columns:1fr}.crit{grid-template-columns:repeat(2,1fr)}
+.rungs{flex-direction:column;align-items:stretch}}
+</style></head><body>
+<div id="app"><div id="stage"><div class="scene"><img class="mark" src="assets/wordmark.png" alt="BiRAGAS"><h1>The Convergence<span class="dot">.</span></h1><div class="big" style="animation-delay:.6s">What happens after "correlation is not causation".</div></div><div class="scene"><div class="kick">BiRAGAS</div><h1>Three rungs, and only one of them sells a drug</h1><div class="rungs"><div class="rung" style="animation-delay:0.50s"><em>Seeing</em><b>P(Y | X)</b><span>A correlation. What the data happens to show.</span></div><div class="rung" style="animation-delay:0.85s"><em>Doing</em><b>P(Y | do(X))</b><span>An intervention. What happens when you force X.</span></div><div class="rung hi" style="animation-delay:1.20s"><em>Imagining</em><b>Counterfactual</b><span>What would have happened instead. Where a drug decision actually lives.</span></div></div></div><div class="scene"><div class="kick">BiRAGAS</div><h1>One correlation, three stories</h1><div class="stories"><div class="st" style="animation-delay:0.60s"><svg width="200" height="130"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6E96D6"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A96A"/></marker></defs><circle cx="40" cy="65" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="40" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">A</text><circle cx="160" cy="65" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="160" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">B</text><line class="" x1="66" y1="65" x2="130" y2="65" stroke="#6E96D6" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.6s forwards"/></svg><p>A drives B</p></div><div class="st" style="animation-delay:0.90s"><svg width="200" height="130"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6E96D6"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A96A"/></marker></defs><circle cx="40" cy="65" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="40" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">A</text><circle cx="160" cy="65" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="160" y="70" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">B</text><line class="" x1="134" y1="65" x2="70" y2="65" stroke="#6E96D6" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.9s forwards"/></svg><p>B drives A</p></div><div class="st" style="animation-delay:1.20s"><svg width="200" height="160"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6E96D6"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A96A"/></marker></defs><circle cx="40" cy="110" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="40" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">A</text><circle cx="160" cy="110" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="160" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">B</text><circle cx="100" cy="28" r="26" fill="#3a2230" stroke="#C8102E" stroke-width="2"/><text x="100" y="33" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">?</text><line class="" x1="84" y1="46" x2="56" y2="88" stroke="#C8102E" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 1.2s forwards"/><line class="" x1="116" y1="46" x2="144" y2="88" stroke="#C8102E" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 1.35s forwards"/></svg><p>Something you never measured drives both</p></div></div></div><div class="scene"><div class="kick">BiRAGAS</div><h1>The one move that settles it</h1><div style="margin-top:26px"><svg width="min(640px,92vw)" viewBox="0 0 640 260"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6E96D6"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A96A"/></marker></defs><circle cx="90" cy="60" r="26" fill="#20283d" stroke="#55607A" stroke-width="2"/><text x="90" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">C1</text><circle cx="90" cy="200" r="26" fill="#20283d" stroke="#55607A" stroke-width="2"/><text x="90" y="205" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">C2</text><circle cx="320" cy="130" r="34" fill="#2d3f69" stroke="#C9A96A" stroke-width="2"/><text x="320" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">X</text><circle cx="560" cy="60" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="560" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">Y1</text><circle cx="560" cy="200" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="560" y="205" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">Y2</text><g style="animation:fall 1s 2.4s forwards"><line class="" x1="116" y1="74" x2="288" y2="116" stroke="#6E96D6" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.5s forwards"/></g><g style="animation:fall 1s 2.55s forwards"><line class="" x1="116" y1="186" x2="288" y2="146" stroke="#6E96D6" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.65s forwards"/></g><line class="" x1="354" y1="114" x2="534" y2="72" stroke="#C9A96A" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.9s forwards"/><line class="" x1="354" y1="146" x2="534" y2="188" stroke="#C9A96A" stroke-width="2.4" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 1.05s forwards"/><g style="animation:snip 1.6s 2.1s forwards"><text x="200" y="140" font-size="34" fill="#C8102E">&#9988;</text></g><text x="320" y="214" text-anchor="middle" font-size="14" fill="#C9A96A" font-weight="700" opacity="0" style="animation:rise .6s 3.1s forwards">do(X = x)</text></svg></div></div><div class="scene"><div class="kick">BiRAGAS</div><h1>Four witnesses, questioned separately</h1><div class="lanes"><div class="lane" style="--c:#6E96D6;animation-delay:0.60s"><b>Observational</b><span>differential expression / enrichment</span><i>witness 1</i></div><div class="lane" style="--c:#3FA9A6;animation-delay:1.10s"><b>Temporal</b><span>Granger causality</span><i>witness 2</i></div><div class="lane" style="--c:#C9A96A;animation-delay:1.60s"><b>Genetic</b><span>five-method Mendelian randomization + eQTL colocalization</span><i>witness 3</i></div><div class="lane" style="--c:#C8102E;animation-delay:2.10s"><b>Interventional</b><span>Pearl do-calculus + in-silico CRISPR</span><i>witness 4</i></div></div></div><div class="scene"><div class="kick">BiRAGAS</div><h1>One graph, assembled from four</h1><svg width="min(620px,92vw)" viewBox="0 0 620 280" style="margin-top:20px"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6E96D6"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#C9A96A"/></marker></defs><line class="" x1="60" y1="40" x2="290" y2="130" stroke="#6E96D6" stroke-width="3" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.5s forwards"/><line class="" x1="60" y1="100" x2="290" y2="130" stroke="#3FA9A6" stroke-width="3" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 0.8s forwards"/><line class="" x1="60" y1="160" x2="290" y2="130" stroke="#C9A96A" stroke-width="3" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 1.1s forwards"/><line class="" x1="60" y1="220" x2="290" y2="130" stroke="#C8102E" stroke-width="3" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 1.4s forwards"/><circle cx="320" cy="130" r="34" fill="#2d3f69" stroke="#C9A96A" stroke-width="2"/><text x="320" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">X</text><line class="" x1="356" y1="130" x2="520" y2="130" stroke="#C9A96A" stroke-width="6" marker-end="url(#ah)" stroke-dasharray="200" stroke-dashoffset="200" style="animation:draw .8s 2.0s forwards"/><circle cx="556" cy="130" r="26" fill="#1b2b4d" stroke="#6E96D6" stroke-width="2"/><text x="556" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#F2F6FC">Y</text><text x="438" y="112" text-anchor="middle" font-size="13" fill="#C9A96A" opacity="0" style="animation:rise .6s 2.6s forwards">three agree</text><text x="438" y="176" text-anchor="middle" font-size="13" fill="#C8102E" opacity="0" style="animation:rise .6s 2.9s forwards">one dissents, and it stays on the record</text></svg></div><div class="scene"><div class="kick">BiRAGAS</div><h1>Eight criteria, one score</h1><div class="crit"><div style="animation-delay:0.50s">strength</div><div style="animation-delay:0.68s">consistency</div><div style="animation-delay:0.86s">specificity</div><div style="animation-delay:1.04s">temporality</div><div style="animation-delay:1.22s">gradient</div><div style="animation-delay:1.40s">plausibility</div><div style="animation-delay:1.58s">coherence</div><div style="animation-delay:1.76s">experiment</div></div><div class="big" style="animation-delay:2.4s">Causal Confidence Score = criteria met &divide; 8</div></div><div class="scene"><div class="kick">Try it</div><h1>The gate, and where it refuses</h1><div class="console"><div class="panel"><h4>Bradford Hill criteria met</h4><div class="toggles" id="crits"><div class="tg on" data-c="0"><span class="box">&#10003;</span>strength</div><div class="tg on" data-c="1"><span class="box">&#10003;</span>consistency</div><div class="tg on" data-c="2"><span class="box">&#10003;</span>specificity</div><div class="tg on" data-c="3"><span class="box">&#10003;</span>temporality</div><div class="tg on" data-c="4"><span class="box">&#10003;</span>gradient</div><div class="tg on" data-c="5"><span class="box">&#10003;</span>plausibility</div><div class="tg on" data-c="6"><span class="box">&#10003;</span>coherence</div><div class="tg on" data-c="7"><span class="box">&#10003;</span>experiment</div></div><h4 style="margin-top:16px">Independent streams behind the claim</h4><div class="toggles" id="strs"><div class="tg on" data-s="0"><span class="box">&#10003;</span>Observational</div><div class="tg on" data-s="1"><span class="box">&#10003;</span>Temporal</div><div class="tg on" data-s="2"><span class="box">&#10003;</span>Genetic</div><div class="tg on" data-s="3"><span class="box">&#10003;</span>Interventional</div></div><div class="slider"><label><span>Predicted effect size</span><span id="efv">70%</span></label><input id="eff" type="range" min="0" max="100" value="70"></div></div><div class="panel gauge"><h4>Causal confidence</h4><div class="num" id="ccs">1.00</div><div class="den" id="den"></div><div class="verdict v1" id="verd"><b>Tier 1 Driver</b><span>Submission grade</span></div><div class="bars"><div>Tier 1 <i><u id="b1"></u></i> 0.8</div><div>Tier 2 <i><u id="b2"></u></i> 0.6</div><div>Tier 3 <i><u id="b3"></u></i> 0.5</div></div><div class="hintline" id="hint"></div></div></div></div><div class="scene"><div class="kick">The asset</div><h1>Why the refusal is the product</h1><div class="beat"><span class="hit" style="animation-delay:0.50s">&#10003;</span><span class="hit" style="animation-delay:0.63s">&#10003;</span><span class="hit" style="animation-delay:0.76s">&#10003;</span><span class="hit" style="animation-delay:0.89s">&#10003;</span><span class="hit" style="animation-delay:1.02s">&#10003;</span><span class="hit" style="animation-delay:1.15s">&#10003;</span><span class="hit" style="animation-delay:1.28s">&#10003;</span><span class="hit" style="animation-delay:1.41s">&#10003;</span><span class="ab" style="animation-delay:1.54s">?</span><span class="ab" style="animation-delay:1.67s">?</span><span class="ab" style="animation-delay:1.80s">?</span></div><div class="big" style="animation-delay:2.2s">8 of 11 called correctly. On the rest it abstained rather than emit a false positive.</div></div><div class="scene"><img class="mark" src="assets/wordmark.png" alt="BiRAGAS"><div class="big" style="animation-delay:.5s;font-size:clamp(16px,2.2vw,25px)">Everyone can tell you that correlation is not causation.<br>This is what it takes to do something about it.</div><div class="big" style="animation-delay:1.4s;font-size:14px;color:#A8B8D4">Dr Mohamad Ayass &middot; mayass@ayassbioscience.com</div></div><div id="cap"></div>
+<div id="gate0"><img src="assets/wordmark.png" alt="BiRAGAS"><div class="pl">&#9654;</div>
+<h2>The Convergence</h2><p>10 scenes, 3 minutes, with sound.<br>
+Scene 8 is yours to play with.</p></div></div>
+<div id="bar"><div id="prog"></div>
+<button class="cb" id="pv" title="Previous">&#10094;</button>
+<button class="cb big2" id="pp" title="Play or pause">&#9654;</button>
+<button class="cb" id="nx" title="Next">&#10095;</button>
+<div id="dots"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div>
+<button class="cb" id="cc" title="Captions">CC</button>
+<button class="cb" id="mu" title="Mute">&#128266;</button>
+<button class="cb" id="fs" title="Full screen">&#9974;</button>
+<div id="meta"></div></div></div>
+<audio id="au" preload="auto"></audio>
+<script>window.SCENES=[{"id": "open", "secs": 12.19, "words": [{"t": 0.1, "w": "Every"}, {"t": 0.43, "w": "explainer"}, {"t": 0.99, "w": "about"}, {"t": 1.27, "w": "causality"}, {"t": 1.88, "w": "stops"}, {"t": 2.34, "w": "at"}, {"t": 2.44, "w": "the"}, {"t": 2.53, "w": "same"}, {"t": 2.89, "w": "place."}, {"t": 3.81, "w": "It"}, {"t": 4.04, "w": "shows"}, {"t": 4.38, "w": "you"}, {"t": 4.48, "w": "that"}, {"t": 4.67, "w": "correlation"}, {"t": 5.38, "w": "is"}, {"t": 5.54, "w": "not"}, {"t": 5.81, "w": "causation,"}, {"t": 6.85, "w": "and"}, {"t": 7.02, "w": "then"}, {"t": 7.19, "w": "it"}, {"t": 7.3, "w": "stops."}, {"t": 8.29, "w": "Nobody"}, {"t": 8.81, "w": "shows"}, {"t": 9.16, "w": "you"}, {"t": 9.23, "w": "what"}, {"t": 9.38, "w": "happens"}, {"t": 9.79, "w": "next."}, {"t": 10.62, "w": "That"}, {"t": 10.92, "w": "is"}, {"t": 11.05, "w": "what"}, {"t": 11.21, "w": "this"}, {"t": 11.41, "w": "is."}]}, {"id": "ladder", "secs": 17.9, "words": [{"t": 0.1, "w": "There"}, {"t": 0.35, "w": "are"}, {"t": 0.48, "w": "three"}, {"t": 0.88, "w": "things"}, {"t": 1.15, "w": "you"}, {"t": 1.24, "w": "can"}, {"t": 1.39, "w": "do"}, {"t": 1.52, "w": "with"}, {"t": 1.68, "w": "data."}, {"t": 2.5, "w": "You"}, {"t": 2.71, "w": "can"}, {"t": 2.88, "w": "see."}, {"t": 3.63, "w": "You"}, {"t": 3.85, "w": "can"}, {"t": 4.04, "w": "do."}, {"t": 4.83, "w": "And"}, {"t": 5.09, "w": "you"}, {"t": 5.17, "w": "can"}, {"t": 5.34, "w": "imagine"}, {"t": 5.91, "w": "what"}, {"t": 6.09, "w": "would"}, {"t": 6.22, "w": "have"}, {"t": 6.37, "w": "happened"}, {"t": 6.75, "w": "instead."}, {"t": 7.69, "w": "Seeing"}, {"t": 8.1, "w": "gives"}, {"t": 8.35, "w": "you"}, {"t": 8.44, "w": "a"}, {"t": 8.52, "w": "correlation."}, {"t": 9.67, "w": "Doing"}, {"t": 10.0, "w": "gives"}, {"t": 10.26, "w": "you"}, {"t": 10.39, "w": "an"}, {"t": 10.47, "w": "experiment."}, {"t": 11.64, "w": "Imagining"}, {"t": 12.29, "w": "gives"}, {"t": 12.58, "w": "you"}, {"t": 12.67, "w": "the"}, {"t": 12.79, "w": "counterfactual,"}, {"t": 14.22, "w": "and"}, {"t": 14.46, "w": "that"}, {"t": 14.6, "w": "is"}, {"t": 14.72, "w": "the"}, {"t": 14.85, "w": "rung"}, {"t": 15.12, "w": "a"}, {"t": 15.21, "w": "drug"}, {"t": 15.6, "w": "programme"}, {"t": 16.31, "w": "actually"}, {"t": 16.8, "w": "lives"}, {"t": 17.14, "w": "on."}]}, {"id": "three", "secs": 19.42, "words": [{"t": 0.1, "w": "Here"}, {"t": 0.47, "w": "is"}, {"t": 0.64, "w": "the"}, {"t": 0.76, "w": "whole"}, {"t": 1.02, "w": "problem"}, {"t": 1.51, "w": "in"}, {"t": 1.63, "w": "one"}, {"t": 1.81, "w": "picture."}, {"t": 2.67, "w": "Gene"}, {"t": 3.06, "w": "A"}, {"t": 3.41, "w": "and"}, {"t": 3.66, "w": "gene"}, {"t": 3.97, "w": "B"}, {"t": 4.09, "w": "move"}, {"t": 4.34, "w": "together."}, {"t": 5.22, "w": "That"}, {"t": 5.5, "w": "is"}, {"t": 5.63, "w": "consistent"}, {"t": 6.29, "w": "with"}, {"t": 6.44, "w": "A"}, {"t": 6.54, "w": "driving"}, {"t": 7.0, "w": "B,"}, {"t": 7.52, "w": "with"}, {"t": 7.69, "w": "B"}, {"t": 7.85, "w": "driving"}, {"t": 8.39, "w": "A,"}, {"t": 9.01, "w": "and"}, {"t": 9.25, "w": "with"}, {"t": 9.42, "w": "something"}, {"t": 9.76, "w": "you"}, {"t": 9.89, "w": "never"}, {"t": 10.23, "w": "measured"}, {"t": 10.62, "w": "driving"}, {"t": 11.02, "w": "both."}, {"t": 11.88, "w": "Correlation"}, {"t": 12.8, "w": "cannot"}, {"t": 13.29, "w": "choose"}, {"t": 13.6, "w": "between"}, {"t": 14.0, "w": "them."}, {"t": 14.72, "w": "Pick"}, {"t": 15.01, "w": "wrong"}, {"t": 15.47, "w": "and"}, {"t": 15.62, "w": "the"}, {"t": 15.71, "w": "molecule"}, {"t": 16.3, "w": "can"}, {"t": 16.48, "w": "be"}, {"t": 16.62, "w": "perfect"}, {"t": 17.26, "w": "while"}, {"t": 17.41, "w": "the"}, {"t": 17.52, "w": "trial"}, {"t": 18.02, "w": "still"}, {"t": 18.39, "w": "fails."}]}, {"id": "do", "secs": 21.79, "words": [{"t": 0.1, "w": "So"}, {"t": 0.36, "w": "you"}, {"t": 0.46, "w": "stop"}, {"t": 0.81, "w": "watching"}, {"t": 1.38, "w": "and"}, {"t": 1.52, "w": "you"}, {"t": 1.61, "w": "intervene."}, {"t": 2.64, "w": "In"}, {"t": 2.85, "w": "the"}, {"t": 2.93, "w": "mathematics"}, {"t": 3.68, "w": "this"}, {"t": 3.97, "w": "is"}, {"t": 4.1, "w": "the"}, {"t": 4.22, "w": "do"}, {"t": 4.41, "w": "operator,"}, {"t": 5.46, "w": "and"}, {"t": 5.59, "w": "the"}, {"t": 5.68, "w": "picture"}, {"t": 6.06, "w": "is"}, {"t": 6.19, "w": "simple:"}, {"t": 7.09, "w": "you"}, {"t": 7.18, "w": "cut"}, {"t": 7.58, "w": "every"}, {"t": 7.85, "w": "arrow"}, {"t": 8.33, "w": "coming"}, {"t": 8.67, "w": "into"}, {"t": 8.87, "w": "the"}, {"t": 9.0, "w": "gene"}, {"t": 9.48, "w": "and"}, {"t": 9.63, "w": "you"}, {"t": 9.77, "w": "set"}, {"t": 10.06, "w": "it"}, {"t": 10.17, "w": "yourself."}, {"t": 11.25, "w": "Whatever"}, {"t": 11.76, "w": "still"}, {"t": 12.09, "w": "moves"}, {"t": 12.43, "w": "afterwards"}, {"t": 13.05, "w": "was"}, {"t": 13.25, "w": "downstream"}, {"t": 13.81, "w": "of"}, {"t": 13.93, "w": "it."}, {"t": 14.56, "w": "BiRAGAS"}, {"t": 15.35, "w": "makes"}, {"t": 15.62, "w": "that"}, {"t": 15.81, "w": "cut"}, {"t": 16.09, "w": "in"}, {"t": 16.25, "w": "software,"}, {"t": 17.14, "w": "which"}, {"t": 17.37, "w": "is"}, {"t": 17.5, "w": "why"}, {"t": 17.72, "w": "it"}, {"t": 17.83, "w": "can"}, {"t": 17.98, "w": "do"}, {"t": 18.12, "w": "it"}, {"t": 18.26, "w": "ten"}, {"t": 18.6, "w": "thousand"}, {"t": 19.0, "w": "times"}, {"t": 19.42, "w": "before"}, {"t": 20.05, "w": "anyone"}, {"t": 20.44, "w": "touches"}, {"t": 20.85, "w": "a"}, {"t": 20.93, "w": "pipette."}]}, {"id": "streams", "secs": 27.24, "words": [{"t": 0.1, "w": "Now"}, {"t": 0.46, "w": "the"}, {"t": 0.57, "w": "part"}, {"t": 0.85, "w": "nobody"}, {"t": 1.32, "w": "animates."}, {"t": 2.41, "w": "BiRAGAS"}, {"t": 3.17, "w": "does"}, {"t": 3.37, "w": "not"}, {"t": 3.6, "w": "ask"}, {"t": 3.87, "w": "one"}, {"t": 4.05, "w": "question,"}, {"t": 4.96, "w": "it"}, {"t": 5.04, "w": "asks"}, {"t": 5.42, "w": "four,"}, {"t": 6.21, "w": "and"}, {"t": 6.38, "w": "it"}, {"t": 6.46, "w": "asks"}, {"t": 6.81, "w": "them"}, {"t": 7.02, "w": "independently."}, {"t": 8.26, "w": "Observational,"}, {"t": 9.38, "w": "what"}, {"t": 9.62, "w": "changed."}, {"t": 10.66, "w": "Temporal,"}, {"t": 11.35, "w": "what"}, {"t": 11.58, "w": "moved"}, {"t": 11.91, "w": "first."}, {"t": 12.84, "w": "Genetic,"}, {"t": 13.59, "w": "what"}, {"t": 13.77, "w": "the"}, {"t": 13.87, "w": "genetics"}, {"t": 14.39, "w": "says,"}, {"t": 15.23, "w": "because"}, {"t": 15.6, "w": "the"}, {"t": 15.73, "w": "variants"}, {"t": 16.35, "w": "were"}, {"t": 16.54, "w": "dealt"}, {"t": 16.88, "w": "at"}, {"t": 17.02, "w": "conception"}, {"t": 17.97, "w": "and"}, {"t": 18.19, "w": "cannot"}, {"t": 18.76, "w": "be"}, {"t": 18.89, "w": "confounded."}, {"t": 20.05, "w": "And"}, {"t": 20.35, "w": "Interventional,"}, {"t": 21.42, "w": "what"}, {"t": 21.56, "w": "happens"}, {"t": 22.16, "w": "when"}, {"t": 22.29, "w": "the"}, {"t": 22.39, "w": "system"}, {"t": 22.85, "w": "is"}, {"t": 23.0, "w": "pushed."}, {"t": 23.98, "w": "Four"}, {"t": 24.25, "w": "witnesses,"}, {"t": 25.02, "w": "questioned"}, {"t": 25.66, "w": "in"}, {"t": 25.91, "w": "separate"}, {"t": 26.33, "w": "rooms."}]}, {"id": "converge", "secs": 18.43, "words": [{"t": 0.1, "w": "Only"}, {"t": 0.48, "w": "then"}, {"t": 0.72, "w": "do"}, {"t": 0.86, "w": "the"}, {"t": 0.98, "w": "four"}, {"t": 1.22, "w": "meet."}, {"t": 1.96, "w": "Each"}, {"t": 2.29, "w": "one"}, {"t": 2.52, "w": "carries"}, {"t": 2.92, "w": "a"}, {"t": 3.0, "w": "direction"}, {"t": 3.69, "w": "and"}, {"t": 3.88, "w": "a"}, {"t": 3.94, "w": "strength,"}, {"t": 4.59, "w": "and"}, {"t": 4.77, "w": "they"}, {"t": 4.89, "w": "are"}, {"t": 5.05, "w": "laid"}, {"t": 5.42, "w": "over"}, {"t": 5.64, "w": "the"}, {"t": 5.76, "w": "same"}, {"t": 6.22, "w": "graph."}, {"t": 7.08, "w": "Where"}, {"t": 7.37, "w": "they"}, {"t": 7.51, "w": "agree,"}, {"t": 8.29, "w": "the"}, {"t": 8.41, "w": "edge"}, {"t": 8.73, "w": "thickens."}, {"t": 9.72, "w": "Where"}, {"t": 9.98, "w": "they"}, {"t": 10.16, "w": "disagree,"}, {"t": 11.26, "w": "the"}, {"t": 11.41, "w": "disagreement"}, {"t": 12.14, "w": "is"}, {"t": 12.27, "w": "kept,"}, {"t": 13.02, "w": "visible,"}, {"t": 13.64, "w": "on"}, {"t": 13.77, "w": "the"}, {"t": 13.88, "w": "record."}, {"t": 14.75, "w": "It"}, {"t": 14.93, "w": "is"}, {"t": 15.06, "w": "not"}, {"t": 15.35, "w": "averaged"}, {"t": 15.76, "w": "away"}, {"t": 16.16, "w": "into"}, {"t": 16.43, "w": "a"}, {"t": 16.51, "w": "single"}, {"t": 16.96, "w": "comfortable"}, {"t": 17.54, "w": "number."}]}, {"id": "score", "secs": 27.86, "words": [{"t": 0.1, "w": "The"}, {"t": 0.28, "w": "score"}, {"t": 0.77, "w": "is"}, {"t": 1.01, "w": "not"}, {"t": 1.38, "w": "a"}, {"t": 1.48, "w": "p"}, {"t": 1.71, "w": "value."}, {"t": 2.62, "w": "It"}, {"t": 2.83, "w": "is"}, {"t": 2.96, "w": "the"}, {"t": 3.09, "w": "Bradford"}, {"t": 3.71, "w": "Hill"}, {"t": 3.94, "w": "criteria,"}, {"t": 4.94, "w": "the"}, {"t": 5.14, "w": "8"}, {"t": 5.35, "w": "tests"}, {"t": 5.77, "w": "epidemiology"}, {"t": 6.77, "w": "has"}, {"t": 7.0, "w": "used"}, {"t": 7.3, "w": "for"}, {"t": 7.46, "w": "sixty"}, {"t": 7.91, "w": "years"}, {"t": 8.38, "w": "to"}, {"t": 8.48, "w": "decide"}, {"t": 9.01, "w": "whether"}, {"t": 9.3, "w": "an"}, {"t": 9.38, "w": "association"}, {"t": 10.21, "w": "is"}, {"t": 10.37, "w": "causal,"}, {"t": 11.23, "w": "counted"}, {"t": 11.72, "w": "and"}, {"t": 11.93, "w": "divided"}, {"t": 12.42, "w": "by"}, {"t": 12.62, "w": "8."}, {"t": 13.39, "w": "Strength."}, {"t": 14.42, "w": "Consistency."}, {"t": 15.77, "w": "Specificity."}, {"t": 17.29, "w": "Temporality."}, {"t": 18.6, "w": "Gradient."}, {"t": 19.75, "w": "Plausibility."}, {"t": 21.05, "w": "Coherence."}, {"t": 22.37, "w": "Experiment."}, {"t": 23.71, "w": "A"}, {"t": 23.85, "w": "number"}, {"t": 24.19, "w": "you"}, {"t": 24.29, "w": "can"}, {"t": 24.42, "w": "interrogate,"}, {"t": 25.22, "w": "because"}, {"t": 25.69, "w": "you"}, {"t": 25.8, "w": "can"}, {"t": 26.01, "w": "see"}, {"t": 26.21, "w": "which"}, {"t": 26.43, "w": "of"}, {"t": 26.55, "w": "the"}, {"t": 26.66, "w": "eight"}, {"t": 26.83, "w": "it"}, {"t": 26.94, "w": "failed."}]}, {"id": "gate", "secs": 31.18, "words": [{"t": 0.1, "w": "And"}, {"t": 0.39, "w": "here"}, {"t": 0.71, "w": "is"}, {"t": 0.85, "w": "the"}, {"t": 0.97, "w": "gate."}, {"t": 1.8, "w": "Above"}, {"t": 2.31, "w": "0.8,"}, {"t": 3.66, "w": "with"}, {"t": 3.84, "w": "a"}, {"t": 3.92, "w": "predicted"}, {"t": 4.38, "w": "effect"}, {"t": 4.88, "w": "over"}, {"t": 5.17, "w": "50%,"}, {"t": 6.41, "w": "the"}, {"t": 6.52, "w": "claim"}, {"t": 6.89, "w": "is"}, {"t": 7.0, "w": "a"}, {"t": 7.12, "w": "Tier"}, {"t": 7.54, "w": "One"}, {"t": 7.73, "w": "Driver"}, {"t": 8.33, "w": "and"}, {"t": 8.54, "w": "it"}, {"t": 8.63, "w": "is"}, {"t": 8.76, "w": "submission"}, {"t": 9.34, "w": "grade."}, {"t": 10.19, "w": "Above"}, {"t": 10.71, "w": "0.6,"}, {"t": 12.01, "w": "with"}, {"t": 12.18, "w": "at"}, {"t": 12.33, "w": "least"}, {"t": 12.67, "w": "2"}, {"t": 12.88, "w": "independent"}, {"t": 13.47, "w": "streams"}, {"t": 13.84, "w": "behind"}, {"t": 14.29, "w": "it,"}, {"t": 14.89, "w": "it"}, {"t": 14.97, "w": "is"}, {"t": 15.06, "w": "a"}, {"t": 15.16, "w": "strong"}, {"t": 15.62, "w": "candidate."}, {"t": 16.6, "w": "Above"}, {"t": 17.13, "w": "0.5,"}, {"t": 18.5, "w": "a"}, {"t": 18.58, "w": "candidate."}, {"t": 19.58, "w": "Below"}, {"t": 19.96, "w": "that,"}, {"t": 20.64, "w": "the"}, {"t": 20.79, "w": "engine"}, {"t": 21.21, "w": "does"}, {"t": 21.41, "w": "not"}, {"t": 21.67, "w": "give"}, {"t": 21.85, "w": "you"}, {"t": 22.01, "w": "a"}, {"t": 22.1, "w": "weaker"}, {"t": 22.47, "w": "answer."}, {"t": 23.38, "w": "It"}, {"t": 23.6, "w": "gives"}, {"t": 23.88, "w": "you"}, {"t": 23.98, "w": "no"}, {"t": 24.19, "w": "answer."}, {"t": 25.09, "w": "Try"}, {"t": 25.43, "w": "it"}, {"t": 25.52, "w": "yourself."}, {"t": 26.55, "w": "Turn"}, {"t": 26.88, "w": "the"}, {"t": 26.97, "w": "criteria"}, {"t": 27.66, "w": "off,"}, {"t": 28.16, "w": "one"}, {"t": 28.35, "w": "at"}, {"t": 28.44, "w": "a"}, {"t": 28.52, "w": "time,"}, {"t": 29.31, "w": "and"}, {"t": 29.58, "w": "watch"}, {"t": 29.88, "w": "where"}, {"t": 30.06, "w": "it"}, {"t": 30.17, "w": "stops."}]}, {"id": "refuse", "secs": 25.66, "words": [{"t": 0.1, "w": "This"}, {"t": 0.38, "w": "is"}, {"t": 0.51, "w": "the"}, {"t": 0.63, "w": "part"}, {"t": 0.97, "w": "that"}, {"t": 1.17, "w": "sounds"}, {"t": 1.53, "w": "like"}, {"t": 1.73, "w": "a"}, {"t": 1.82, "w": "weakness"}, {"t": 2.44, "w": "and"}, {"t": 2.76, "w": "is"}, {"t": 2.92, "w": "the"}, {"t": 3.03, "w": "whole"}, {"t": 3.36, "w": "asset."}, {"t": 4.29, "w": "Asked"}, {"t": 4.68, "w": "to"}, {"t": 4.79, "w": "call"}, {"t": 5.08, "w": "11"}, {"t": 5.52, "w": "leukaemia"}, {"t": 6.14, "w": "drugs"}, {"t": 6.59, "w": "retrospectively,"}, {"t": 7.85, "w": "BiRAGAS"}, {"t": 8.59, "w": "got"}, {"t": 8.83, "w": "8"}, {"t": 9.01, "w": "right."}, {"t": 9.69, "w": "On"}, {"t": 9.91, "w": "the"}, {"t": 10.01, "w": "rest"}, {"t": 10.35, "w": "it"}, {"t": 10.46, "w": "did"}, {"t": 10.6, "w": "not"}, {"t": 10.85, "w": "guess."}, {"t": 11.72, "w": "It"}, {"t": 11.92, "w": "reported"}, {"t": 12.43, "w": "low"}, {"t": 12.63, "w": "confidence"}, {"t": 13.31, "w": "or"}, {"t": 13.58, "w": "abstained"}, {"t": 14.14, "w": "rather"}, {"t": 14.55, "w": "than"}, {"t": 14.71, "w": "emit"}, {"t": 15.02, "w": "a"}, {"t": 15.1, "w": "false"}, {"t": 15.51, "w": "positive."}, {"t": 16.54, "w": "A"}, {"t": 16.72, "w": "platform"}, {"t": 17.34, "w": "that"}, {"t": 17.64, "w": "always"}, {"t": 18.04, "w": "has"}, {"t": 18.22, "w": "an"}, {"t": 18.37, "w": "answer"}, {"t": 18.79, "w": "has"}, {"t": 18.98, "w": "told"}, {"t": 19.26, "w": "you"}, {"t": 19.38, "w": "nothing"}, {"t": 19.75, "w": "about"}, {"t": 20.04, "w": "which"}, {"t": 20.29, "w": "answers"}, {"t": 20.79, "w": "to"}, {"t": 20.89, "w": "trust."}, {"t": 21.89, "w": "The"}, {"t": 22.09, "w": "refusals"}, {"t": 22.72, "w": "are"}, {"t": 22.88, "w": "what"}, {"t": 23.01, "w": "make"}, {"t": 23.25, "w": "the"}, {"t": 23.37, "w": "confident"}, {"t": 23.92, "w": "calls"}, {"t": 24.37, "w": "worth"}, {"t": 24.71, "w": "anything."}]}, {"id": "close", "secs": 6.55, "words": [{"t": 0.1, "w": "Everyone"}, {"t": 0.67, "w": "else"}, {"t": 1.02, "w": "can"}, {"t": 1.22, "w": "tell"}, {"t": 1.47, "w": "you"}, {"t": 1.57, "w": "that"}, {"t": 1.76, "w": "correlation"}, {"t": 2.53, "w": "is"}, {"t": 2.73, "w": "not"}, {"t": 3.01, "w": "causation."}, {"t": 4.1, "w": "This"}, {"t": 4.37, "w": "is"}, {"t": 4.5, "w": "what"}, {"t": 4.66, "w": "it"}, {"t": 4.75, "w": "takes"}, {"t": 5.04, "w": "to"}, {"t": 5.13, "w": "do"}, {"t": 5.29, "w": "something"}, {"t": 5.67, "w": "about"}, {"t": 5.93, "w": "it."}]}];window.TOTAL=208.22;window.GATE={"n": 8, "t1": 0.8, "t2": 0.6, "t3": 0.5, "eff": 50, "ms": 2};
+const SC=window.SCENES,A=document.getElementById('au');
+let i=0,playing=false;
+const els=[...document.querySelectorAll('.scene')],dots=[...document.querySelectorAll('#dots b')];
+const cap=document.getElementById('cap'),prog=document.getElementById('prog'),meta=document.getElementById('meta');
+function show(n,auto){
+ i=(n+SC.length)%SC.length;
+ els.forEach((e,k)=>e.classList.toggle('on',k===i));
+ dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+ const el=els[i];el.style.display='none';void el.offsetHeight;el.style.display='';
+ A.src='audio/'+SC[i].id+'.mp3';
+ cap.innerHTML=SC[i].words.map(w=>'<span>'+w.w+'</span>').join(' ');
+ meta.textContent=(i+1)+' / '+SC.length;
+ if(auto!==false&&playing)A.play().catch(()=>{});
+}
+A.addEventListener('timeupdate',()=>{
+ const t=A.currentTime,ws=SC[i].words;let cur=-1;
+ for(let k=0;k<ws.length;k++){if(t>=ws[k].t-0.04)cur=k;else break;}
+ cap.querySelectorAll('span').forEach((s,k)=>{
+  s.style.color=k<=cur?'#F2F6FC':'#7E90B4';s.style.fontWeight=k===cur?'700':'400';});
+ const done=SC.slice(0,i).reduce((a,s)=>a+s.secs,0);
+ prog.style.width=((done+t)/TOTAL*100).toFixed(2)+'%';});
+A.addEventListener('ended',()=>{if(i<SC.length-1)show(i+1);else{playing=false;pp();}});
+function pp(){document.getElementById('pp').textContent=playing?'\u2759\u2759':'\u25B6';}
+document.getElementById('pp').onclick=()=>{playing=!playing;pp();playing?A.play().catch(()=>{}):A.pause();};
+document.getElementById('nx').onclick=()=>show(i+1);
+document.getElementById('pv').onclick=()=>show(i-1);
+document.getElementById('cc').onclick=function(){cap.classList.toggle('off');
+ this.style.opacity=cap.classList.contains('off')?.45:1;};
+document.getElementById('mu').onclick=function(){A.muted=!A.muted;this.textContent=A.muted?'\u{1F507}':'\u{1F50A}';};
+document.getElementById('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():
+ document.documentElement.requestFullscreen().catch(()=>{});};
+dots.forEach((d,k)=>d.onclick=()=>show(k));
+document.addEventListener('keydown',e=>{
+ if(e.target.tagName==='INPUT')return;
+ if(e.code==='Space'){e.preventDefault();document.getElementById('pp').click();}
+ if(e.code==='ArrowRight')show(i+1);if(e.code==='ArrowLeft')show(i-1);});
+document.getElementById('gate0').onclick=function(){this.style.display='none';playing=true;pp();show(0);A.play().catch(()=>{});};
+/* the gate console */
+(function(){
+ const G=window.GATE;
+ const crits=[...document.querySelectorAll('#crits .tg')];
+ const strs=[...document.querySelectorAll('#strs .tg')];
+ const eff=document.getElementById('eff'),efv=document.getElementById('efv');
+ const ccsEl=document.getElementById('ccs'),den=document.getElementById('den');
+ const verd=document.getElementById('verd'),hint=document.getElementById('hint');
+ function paint(){
+  const met=crits.filter(c=>c.classList.contains('on')).length;
+  const ns=strs.filter(c=>c.classList.contains('on')).length;
+  const e=+eff.value;
+  const ccs=met/G.n;
+  efv.textContent=e+'%';
+  ccsEl.textContent=ccs.toFixed(2);
+  den.textContent=met+' of '+G.n+' criteria met, '+ns+' stream'+(ns===1?'':'s');
+  document.getElementById('b1').style.width=Math.min(100,ccs/G.t1*100)+'%';
+  document.getElementById('b2').style.width=Math.min(100,ccs/G.t2*100)+'%';
+  document.getElementById('b3').style.width=Math.min(100,ccs/G.t3*100)+'%';
+  let cls,title,sub,note;
+  if(ccs>=G.t1&&e>G.eff){cls='v1';title='Tier 1 Driver';sub='Submission grade';
+   note='Both conditions hold: the score clears '+G.t1+' and the predicted effect clears '+G.eff+'%.';}
+  else if(ccs>=G.t2&&ns>=G.ms){cls='v2';title='Tier 2 Strong Candidate';sub='Worth pursuing';
+   note='Clears '+G.t2+' with '+ns+' independent streams behind it.';}
+  else if(ccs>=G.t3){cls='v3';title='Tier 3 Candidate';sub='Flagged, not claimed';
+   note='Clears '+G.t3+'. Enough to look at, not enough to act on.';}
+  else{cls='v0';title='Abstain';sub='No claim is made';
+   note='The score is '+ccs.toFixed(2)+', below '+G.t3+'. The engine returns nothing rather than a weak answer.';}
+  if(ccs>=G.t1&&e<=G.eff&&cls!=='v1')
+   note='The score clears '+G.t1+', but the predicted effect is only '+e+'%, so it is not Tier 1.';
+  if(ccs>=G.t2&&ns<G.ms&&cls==='v3')
+   note='The score clears '+G.t2+', but only '+ns+' stream'+(ns===1?'':'s')+' supports it, and Tier 2 needs '+G.ms+'.';
+  verd.className='verdict '+cls;
+  verd.innerHTML='<b>'+title+'</b><span>'+sub+'</span>';
+  hint.textContent=note;
+ }
+ [...crits,...strs].forEach(t=>t.onclick=()=>{t.classList.toggle('on');paint();});
+ eff.addEventListener('input',paint);
+ paint();
+})();
+show(0,false);
+</script>
+</body></html>
